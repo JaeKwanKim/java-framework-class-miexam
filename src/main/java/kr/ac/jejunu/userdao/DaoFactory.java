@@ -20,7 +20,7 @@ public class DaoFactory {
 
     @Bean
     public GetConnectionInterface ConnectionMakerJeju() {
-        return  new GetConnectionMakerJeju();
+        return  new GetConnectionMaker();
     }
 
     @Bean

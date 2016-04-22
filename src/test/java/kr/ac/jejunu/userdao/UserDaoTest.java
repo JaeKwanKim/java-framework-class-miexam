@@ -1,15 +1,18 @@
 package kr.ac.jejunu.userdao;
 
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
 
 public class UserDaoTest {
+    ApplicationContext context;
+
     @Test
     public void AddJeju() throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao(new GetConnectionMakerJeju());
+        UserDao userDao = new DaoFactory().userDaoJeju();
 //        UserDao userDaoJeju = new UserDao();
 
         String name = "김재관";
@@ -27,7 +30,7 @@ public class UserDaoTest {
     @Test
     public void get() throws SQLException, ClassNotFoundException {
 //        UserDao userDaoJeju = new UserDao();
-        UserDao userDao = new UserDao(new GetConnectionMakerJeju());
+        UserDao userDao = new DaoFactory().userDaoJeju();
 
         Long id = 1L;
         String name = "허윤호";
@@ -41,7 +44,7 @@ public class UserDaoTest {
 
     @Test
     public void AddHalla() throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao(new GetConnectionMakerHalla());
+        UserDao userDao = new DaoFactory().userDaoHalla();
 //        UserDao userDaoJeju = new UserDao();
 
         String name = "김재관";

@@ -4,16 +4,16 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class GetConnectionMakerJeju implements GetConnectionInterface {
+public class GetConnectionMaker implements GetConnectionInterface {
     private String ClassName = "com.mysql.jdbc.Driver";
     private String url = "jdbc:mysql://localhost:3306/test?useSSL=false";
     private String userName = "root";
     private String password = "";
 
-    public GetConnectionMakerJeju() {
+    public GetConnectionMaker() {
     }
 
-    public GetConnectionMakerJeju(String className, String url, String userName, String password) {
+    public GetConnectionMaker(String className, String url, String userName, String password) {
         ClassName = className;
         this.url = url;
         this.userName = userName;
