@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DaoFactory {
     @Bean
-    public UserDao userDaoJeju() {
-        return new UserDao(ConnectionMakerJeju());
+    public UserDao userDao() {
+        return new UserDao(ConnectionMaker());
     }
 
     @Bean
@@ -19,7 +19,7 @@ public class DaoFactory {
     }
 
     @Bean
-    public GetConnectionInterface ConnectionMakerJeju() {
+    public GetConnectionInterface ConnectionMaker() {
         return  new GetConnectionMaker();
     }
 
