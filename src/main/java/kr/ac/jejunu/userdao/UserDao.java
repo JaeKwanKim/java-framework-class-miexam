@@ -47,7 +47,7 @@ public class UserDao {
     }
     public User get(Long id) throws ClassNotFoundException, SQLException {
 //        String sql = "select * from test where id = ?";
-        MakeStatement statement = new GetUserStatementStrategy();
+        MakeStatement statement = new GetUserStatementStrategy(id);
         User user = context.jdbcContextwithStatementStrategyForQuery(statement);
 //        Connection connection = null;
 //        PreparedStatement preparedStatement = null;
