@@ -10,40 +10,79 @@ public class UserDao {
     }
 
     public long add(User user) throws ClassNotFoundException, SQLException {
-        Connection connection = connetionMaker.getConnection();
-
         String sql = "insert into test(name, password) values(?,?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setString(1, user.getName());
-        preparedStatement.setString(2, user.getPassword());
+        long id = 0;
+        Connection connection= null;
+        PreparedStatement preparedStatement = null;
+        try {
+            connection = connetionMaker.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, user.getName());
+            preparedStatement.setString(2, user.getPassword());
 
-        preparedStatement.executeUpdate();
-        long id = getLastInsertId(connection);
-
-        preparedStatement.close();
-        connection.close();
-
+            preparedStatement.executeUpdate();
+            id = getLastInsertId(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (preparedStatement != null)
+                try {
+                    preparedStatement.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            if (connection != null)
+                try {
+                    connection.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+    }
         return id;
     }
     public User get(Long id) throws ClassNotFoundException, SQLException {
-        Connection connection = connetionMaker.getConnection();
 
         String sql = "select * from test where id = ?";
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        preparedStatement.setLong(1, id);
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        User user;
+        try{
+            connection = connetionMaker.getConnection();
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, id);
 
-        ResultSet resultSet = preparedStatement.executeQuery();
-        resultSet.next();
+            resultSet = preparedStatement.executeQuery();
+            resultSet.next();
 
-        User user = new User();
-        user.setId(resultSet.getLong("id"));
-        user.setName(resultSet.getString("name"));
-        user.setPassword(resultSet.getString("password"));
+            user = new User();
+            user.setId(resultSet.getLong("id"));
+            user.setName(resultSet.getString("name"));
+            user.setPassword(resultSet.getString("password"));
 
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
-
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            if (resultSet != null)
+            try {
+            resultSet.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            }
+            if (preparedStatement != null)
+            try {
+                preparedStatement.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (connection != null)
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return user;
     }
 
