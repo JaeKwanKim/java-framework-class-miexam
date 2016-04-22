@@ -19,7 +19,7 @@ public class UserDao {
 
     public User get(long id){
         String sql = "select * from test where id = ?";
-//        StatementStrategy statementStrategy = new GetUserStatementStrategy(id);
+//      MakeStatement statement = new GetUserStatementStrategy(id);
         User user = null;
         try {
             user = jdbcTemplate.queryForObject(sql, new Object[]{id}, userMapper);
@@ -29,7 +29,7 @@ public class UserDao {
 
     public long add(User user) {
         String sql = "insert into test(name, password) values(?,?)";
-//        StatementStrategy statementStrategy = new AddUserStatementStrategy(user);
+//      MakeStatement statement = new AddUserStatementStrategy(user);
         GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
@@ -45,13 +45,13 @@ public class UserDao {
 
     public void delete(long id) {
         String sql = "delete from test where id=?";
-//        StatementStrategy statementStrategy = new DeleteUserStatementStratgy(id);
+//      MakeStatement statement = new DeleteUserStatementStratgy(id);
         jdbcTemplate.update(sql, new Object[] {id});
     }
 
     public void update(User user) {
         String sql = "update test set name=?, password=? where id=?";
-//        StatementStrategy statementStrategy = new UpdateUserStatementStratgy(user);
+//      MakeStatement statement = new UpdateUserStatementStratgy(user);
         jdbcTemplate.update(sql, new Object[]{user.getName(), user.getPassword(), user.getId()});
     }
 
