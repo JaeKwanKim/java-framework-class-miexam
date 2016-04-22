@@ -1,130 +1,69 @@
 package kr.ac.jejunu.userdao;
 
-import java.sql.*;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+/**
+ * Created by JKKim on 2016. 3. 25..
+ */
 public class UserDao {
-    private jdbcContext context;
-    private GetConnectionInterface connetionMaker;
+    private JdbcTemplate jdbcTemplate;
 
-    public void setContext(kr.ac.jejunu.userdao.jdbcContext context) {
-        this.context = context;
-    }
-
-    public void setConnetionMaker(GetConnectionInterface connetionMaker) {
-        this.connetionMaker = connetionMaker;
-    }
-
-    public long add(User user) throws ClassNotFoundException, SQLException {
-//        String sql = "insert into test(name, password) values(?,?)";
-        MakeStatement statement = new AddUserStatementStrategy(user);
-        long id = context.jdbcContextWithStatementStrategyForInsert(statement);
-//        long id = 0;
-//        Connection connection= null;
-//        PreparedStatement preparedStatement = null;
-//        try {
-//            connection = connetionMaker.getConnection();
-//            preparedStatement = statement.makeStatement(connection);
-//            preparedStatement.executeUpdate();
-//            id = getLastInsertId(connection);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        } finally {
-//            if (preparedStatement != null)
-//                try {
-//                    preparedStatement.close();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            if (connection != null)
-//                try {
-//                    connection.close();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//    }
-
-        return id;
-    }
-    public User get(Long id) throws ClassNotFoundException, SQLException {
-//        String sql = "select * from test where id = ?";
-        MakeStatement statement = new GetUserStatementStrategy(id);
-        User user = context.jdbcContextwithStatementStrategyForQuery(statement);
-//        Connection connection = null;
-//        PreparedStatement preparedStatement = null;
-//        ResultSet resultSet = null;
-//        User user = new User();
-//        try{
-//            connection = connetionMaker.getConnection();
-//            statement.makeStatement(connection);
-//            resultSet = preparedStatement.executeQuery();
-//            resultSet.next();
-//
-//            if(resultSet != null) {
-//                user.setId(resultSet.getLong("id"));
-//                user.setName(resultSet.getString("name"));
-//                user.setPassword(resultSet.getString("password"));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            throw e;
-//        } finally {
-//            if (resultSet != null)
-//            try {
-//            resultSet.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            }
-//            if (preparedStatement != null)
-//            try {
-//                preparedStatement.close();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            if (connection != null)
-//            try {
-//                connection.close();
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
+    public User get(long id){
+        String sql = "select * from test where id = ?";
+//        StatementStrategy statementStrategy = new GetUserStatementStrategy(id);
+        User user = null;
+        try {
+            user = jdbcTemplate.queryForObject(sql, new Object[]{id}, userMapper);
+        } catch (EmptyResultDataAccessException e) {}
         return user;
     }
 
-    public void update(User user) throws SQLException, ClassNotFoundException {
-//        String sql = "update test set name=?, password=? where id=?";
-        MakeStatement statement = new UpdateUserStatementStratgy(user);
-        context.jdbcContextWithStatementStarategy(statement);
-//        Connection connection = null;
-//        PreparedStatement preparedStatement = null;
-//        try{
-//            connection = connetionMaker.getConnection();
-//            statement.makeStatement(connection);
-//            preparedStatement.executeUpdate();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            throw e;
-//        } finally {
-//            if (preparedStatement != null)
-//                try {
-//                    preparedStatement.close();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            if (connection != null)
-//                try {
-//                    connection.close();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//        }
+    public long add(User user) {
+        String sql = "insert into test(name, password) values(?,?)";
+//        StatementStrategy statementStrategy = new AddUserStatementStrategy(user);
+        GeneratedKeyHolder generatedKeyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement statement = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                statement.setString(1, user.getName());
+                statement.setString(2, user.getPassword());
+                return statement;
+            }
+        }, generatedKeyHolder);
+        return (long) generatedKeyHolder.getKey();
     }
 
-    public void delete(long id) throws SQLException, ClassNotFoundException {
-//        String sql = "DELETE FROM test where id=?";
-        MakeStatement statement = new DeleteUserStatementStratgy(id);
-        context.jdbcContextWithStatementStarategy(statement);
-//        Connection connection = null;
-//        PreparedStatement preparedStatement = null;
+    public void delete(long id) {
+        String sql = "delete from test where id=?";
+//        StatementStrategy statementStrategy = new DeleteUserStatementStratgy(id);
+        jdbcTemplate.update(sql, new Object[] {id});
     }
 
+    public void update(User user) {
+        String sql = "update test set name=?, password=? where id=?";
+//        StatementStrategy statementStrategy = new UpdateUserStatementStratgy(user);
+        jdbcTemplate.update(sql, new Object[]{user.getName(), user.getPassword(), user.getId()});
+    }
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    private RowMapper<User> userMapper = (resultSet, i) -> {
+        User user = new User();
+        user.setId(resultSet.getLong("id"));
+        user.setName(resultSet.getString("name"));
+        user.setPassword(resultSet.getString("password"));
+        return user;
+    };
 }
