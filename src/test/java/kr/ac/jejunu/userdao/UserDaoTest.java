@@ -8,8 +8,9 @@ import static org.junit.Assert.assertEquals;
 
 public class UserDaoTest {
     @Test
-    public void add() throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao();
+    public void AddJeju() throws SQLException, ClassNotFoundException {
+        UserDao userDao = new DaoFactory().userDaoJeju();
+//        UserDao userDaoJeju = new UserDao();
 
         String name = "김재관";
         String password = "1234";
@@ -25,7 +26,8 @@ public class UserDaoTest {
     }
     @Test
     public void get() throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao();
+//        UserDao userDaoJeju = new UserDao();
+        UserDao userDao = new DaoFactory().userDaoJeju();
         Long id = 1L;
         String name = "허윤호";
         String password = "1234";
@@ -34,5 +36,24 @@ public class UserDaoTest {
         assertEquals(id, user.getId());
         assertEquals(name, user.getName());
         assertEquals(password, user.getPassword());
+    }
+
+    @Test
+    public void AddHalla() throws SQLException, ClassNotFoundException {
+        UserDao userDao = new DaoFactory().userDaoHalla();
+//        UserDao userDaoJeju = new UserDao();
+
+        String name = "김재관";
+        String password = "1234";
+
+        User user = new User();
+        user.setName(name);
+        user.setPassword(password);
+
+        long id = userDao.add(user);
+        System.out.println(id);
+        assertEquals(name, user.getName());
+        assertEquals(password, user.getPassword());
+
     }
 }

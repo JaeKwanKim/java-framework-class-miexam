@@ -4,10 +4,24 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class GetConnectionMaker implements GetConnectionInterface {
-    private String ClassName;
-    private String url;
-    private String userName;
+/**
+ * Created by JKKim on 2016. 4. 22..
+ */
+public class GetConnectionMakerHalla implements GetConnectionInterface{
+    private String ClassName = "com.mysql.jdbc.Driver";
+    private String url = "jdbc:mysql://localhost:3306/test?useSSL=false";
+    private String userName = "root";
+    private String password = "";
+
+    public GetConnectionMakerHalla() {
+    }
+
+    public GetConnectionMakerHalla(String className, String url, String userName, String password) {
+        ClassName = className;
+        this.url = url;
+        this.userName = userName;
+        this.password = password;
+    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -23,10 +37,6 @@ public class GetConnectionMaker implements GetConnectionInterface {
 
     public void setClassName(String className) {
         ClassName = className;
-    }
-
-    private String password;
-    public GetConnectionMaker() {
     }
 
     public Connection getConnection() throws ClassNotFoundException, SQLException {
