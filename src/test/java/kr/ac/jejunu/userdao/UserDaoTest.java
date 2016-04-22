@@ -2,7 +2,7 @@ package kr.ac.jejunu.userdao;
 
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 
 import java.sql.SQLException;
 
@@ -13,9 +13,7 @@ public class UserDaoTest {
 
     @Test
     public void AddJeju() throws SQLException, ClassNotFoundException {
-//        UserDao userDao = new DaoFactory().userDao();
-//        UserDao userDao = new UserDao();
-        context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        context = new GenericXmlApplicationContext("XmlApplicationContext.xml");
         UserDao userDao = (UserDao) context.getBean("userDao");
 
         String name = "김재관";
@@ -32,9 +30,7 @@ public class UserDaoTest {
     }
     @Test
     public void get() throws SQLException, ClassNotFoundException {
-//        UserDao userDao = new UserDao();
-//        UserDao userDao = new DaoFactory().userDao();
-        context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        context = new GenericXmlApplicationContext("XmlApplicationContext.xml");
         UserDao userDao = (UserDao) context.getBean("userDao");
         Long id = 1L;
         String name = "허윤호";
@@ -48,9 +44,7 @@ public class UserDaoTest {
 
     @Test
     public void AddHalla() throws SQLException, ClassNotFoundException {
-//        UserDao userDao = new DaoFactory().userDaoHalla();
-//        UserDao userDao = new UserDao();
-        context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        context = new GenericXmlApplicationContext("XmlApplicationContext.xml");
         UserDao userDao = (UserDao) context.getBean("userDao");
         String name = "김재관";
         String password = "1234";
