@@ -10,16 +10,14 @@ public class UserDao {
     }
 
     public long add(User user) throws ClassNotFoundException, SQLException {
-        String sql = "insert into test(name, password) values(?,?)";
+//        String sql = "insert into test(name, password) values(?,?)";
+        MakeStatement statement = new AddUserStatementStrategy(user);
         long id = 0;
         Connection connection= null;
         PreparedStatement preparedStatement = null;
         try {
             connection = connetionMaker.getConnection();
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getPassword());
-
+            preparedStatement = statement.makeStatement(connection);
             preparedStatement.executeUpdate();
             id = getLastInsertId(connection);
         } catch (SQLException e) {
@@ -41,16 +39,15 @@ public class UserDao {
         return id;
     }
     public User get(Long id) throws ClassNotFoundException, SQLException {
-        String sql = "select * from test where id = ?";
+//        String sql = "select * from test where id = ?";
+        MakeStatement statement = new GetUserStatementStrategy();
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         User user = new User();
         try{
             connection = connetionMaker.getConnection();
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(1, id);
-
+            statement.makeStatement(connection);
             resultSet = preparedStatement.executeQuery();
             resultSet.next();
 
@@ -86,15 +83,13 @@ public class UserDao {
     }
 
     public void update(User user) throws SQLException, ClassNotFoundException {
-        String sql = "update test set name=?, password=? where id=?";
+//        String sql = "update test set name=?, password=? where id=?";
+        MakeStatement statement = new UpdateUserStatementStratgy(user);
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try{
             connection = connetionMaker.getConnection();
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setLong(3, user.getId());
+            statement.makeStatement(connection);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -116,13 +111,14 @@ public class UserDao {
     }
 
     public void delete(long id) throws SQLException, ClassNotFoundException {
-        String sql = "DELETE FROM test where id=?";
+//        String sql = "DELETE FROM test where id=?";
+        MakeStatement statement = new DeleteUserStatementStratgy(id);
+
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try{
             connection = connetionMaker.getConnection();
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(1, id);
+            statement.makeStatement(connection);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
