@@ -5,8 +5,8 @@ import java.sql.*;
 public class UserDao {
     private GetConnectionInterface connetionMaker;
 
-    public UserDao(GetConnectionInterface getConnectionMaker) {
-        this.connetionMaker = getConnectionMaker;
+    public void setConnetionMaker(GetConnectionInterface connetionMaker) {
+        this.connetionMaker = connetionMaker;
     }
 
     public long add(User user) throws ClassNotFoundException, SQLException {
